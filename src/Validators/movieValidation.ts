@@ -13,5 +13,6 @@ export default {
   },
   category: {
     isEmpty: false,
+    exists: "category:_id" 
   },
 };

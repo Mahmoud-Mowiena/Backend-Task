@@ -1,17 +1,16 @@
 export default `
 input CreateMovieInput {
-  _id: ID,
   name: String,
   releaseDate: Date,
   cast: [String],
-  category: String,
+  category: ID,
 }
 
 input UpdateMovieInput {
-  _id: ID,
+  id: ID,
   name: String,
   releaseDate: Date,
   cast: [String],
-  category: String,
+  category: ID,
 }
 `;

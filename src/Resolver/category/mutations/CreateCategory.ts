@@ -20,25 +20,22 @@ export default class CreateCategory extends MutationResolver {
   }
 
   async execute(args: { category: ICategory }): Promise<Message> {
-    try {
-      const categoryRepo = this.getRepository<CategoryRepository>("category");
+    const categoryRepo = this.getRepository<CategoryRepository>("category");
 
-      const category: ICategory = await categoryRepo.findOneByName(
-        args.category.name
+    const category: ICategory = await categoryRepo.findOneByName(
+      args.category.name
+    );
+
+    if (category) {
+      throw this.createValidationException(
+        `Category "${args.category.name}" already exists`
       );
-
-      if (category) {
-        throw this.createValidationException(
-          `Category "${args.category.name}" already exists`
-        );
-      }
-
-      await categoryRepo?.create(args.category);
-
-      return new Message("Category has been created successfully.", 201);
-    } catch (e) {
-      warn(e);
-      throw this.createServerErrorException(e);
     }
+
+    await categoryRepo?.create(args.category).catch((err) => {
+      throw this.createServerErrorException(err);
+    });
+
+    return new Message("Category has been created successfully.", 201);
   }
 }

@@ -6,8 +6,6 @@ import {
 import IMovie from "../../../Interface/IMovie";
 import MovieRepository from "../../../Repository/MovieRepository";
 import movieValidation from "../../../Validators/movieValidation";
-import CategoryRepository from "../../../Repository/CategoryRepository";
-import ICategory from "../../../Interface/ICategory";
 
 export default class UpdateMovie extends MutationResolver {
   activate(): boolean | object {
@@ -23,36 +21,16 @@ export default class UpdateMovie extends MutationResolver {
 
   async execute(args: { movie: IMovie }): Promise<Message> {
     const movie = args.movie;
-
-    const movieExist = await this.getRepository<MovieRepository>("movie")
-      ?.findOneById(movie.id)
-      .catch((err) => {
-        throw this.createServerErrorException(err);
-      });
+    const movieRepo = this.getRepository<MovieRepository>("movie");
+    const movieExist = await movieRepo?.findOneById(movie.id).catch((err) => {
+      throw this.createServerErrorException(err);
+    });
 
     if (!movieExist) throw this.createNotFoundException("Movie not found");
 
-    const categoryRepo = this.getRepository<CategoryRepository>("category");
-    const category: ICategory = await categoryRepo.findOneByName(
-      movie.category
-    );
-
-    if (!category) {
-      throw this.createValidationException(
-        `Category "${movie.category}" not found`
-      );
-    }
-
-    const movieToUpdate: IMovie = {
-      ...movie,
-      category: category.id,
-    };
-
-    await this.getRepository<MovieRepository>("movie")
-      ?.update(movieToUpdate, movie.id)
-      .catch((err) => {
-        throw this.createServerErrorException(err);
-      });
+    await movieRepo?.update(args.movie, movie.id).catch((err) => {
+      throw this.createServerErrorException(err);
+    });
 
     return new Message("Movie Updated", 200);
   }

@@ -5,5 +5,5 @@ export default interface IMovie {
   name: string;
   releaseDate: Date;
   cast: string[];
-  category: string | ISchemaID;
+  category: ISchemaID;
 }

@@ -2,12 +2,9 @@ import {
   Message,
   MutationResolver,
   IFieldValidationError,
-  warn,
 } from "@storexweb/kernel";
 import IMovie from "Interface/IMovie";
 import MovieRepository from "Repository/MovieRepository";
-import CategoryRepository from "Repository/CategoryRepository";
-import ICategory from "Interface/ICategory";
 import movieValidation from "Validators/movieValidation";
 
 export default class CreateMovie extends MutationResolver {
@@ -20,30 +17,12 @@ export default class CreateMovie extends MutationResolver {
   }
 
   async execute(args: { movie: IMovie }): Promise<Message> {
-    try {
-      const categoryRepo = this.getRepository<CategoryRepository>("category");
+    await this.getRepository<MovieRepository>("movie")
+      ?.create(args.movie)
+      .catch((err) => {
+        throw this.createServerErrorException(err);
+      });
 
-      const category: ICategory = await categoryRepo.findOneByName(
-        args.movie.category
-      );
-
-      if (!category) {
-        throw this.createValidationException(
-          `Category "${args.movie.category}" not found`
-        );
-      }
-
-      const movieToSave: IMovie = {
-        ...args.movie,
-        category: category.id,
-      };
-
-      await this.getRepository<MovieRepository>("movie")?.create(movieToSave);
-
-      return new Message("Movie has been created successfully.", 201);
-    } catch (e) {
-      warn(e);
-      throw this.createServerErrorException(e);
-    }
+    return new Message("Movie has been created successfully.", 201);
   }
 }

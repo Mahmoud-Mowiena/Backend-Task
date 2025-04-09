@@ -20,7 +20,9 @@ export default class DeleteCategory extends MutationResolver {
       throw this.createNotFoundException("category not found");
     }
 
-    const moviesUsingCategory = await this.getRepository<MovieRepository>("movie")?.count({ category: args.id }, {});
+    const moviesUsingCategory = await this.getRepository<MovieRepository>(
+      "movie"
+    )?.count({ category: args.id }, {});
 
     if (moviesUsingCategory > 0) {
       throw this.createValidationException(

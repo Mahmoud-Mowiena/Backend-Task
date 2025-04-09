@@ -8,21 +8,18 @@ export default class DeleteMovie extends MutationResolver {
   }
 
   async execute(args: { id: ISchemaID }): Promise<Message> {
-    const movie = await this.getRepository<MovieRepository>("movie")
-      ?.findOneById(args.id)
-      .catch((err) => {
-        throw this.createServerErrorException(err);
-      });
+    const movieRepo = this.getRepository<MovieRepository>("movie");
+    const movie = await movieRepo?.findOneById(args.id).catch((err) => {
+      throw this.createServerErrorException(err);
+    });
 
     if (!movie) {
       throw this.createNotFoundException("Movie not found");
     }
 
-    await this.getRepository<MovieRepository>("movie")
-      ?.delete(args.id)
-      .catch((err) => {
-        throw this.createServerErrorException(err);
-      });
+    await movieRepo?.delete(args.id).catch((err) => {
+      throw this.createServerErrorException(err);
+    });
 
     return new Message("Movie Deleted", 200);
   }

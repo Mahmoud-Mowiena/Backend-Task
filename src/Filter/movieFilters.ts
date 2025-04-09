@@ -23,5 +23,10 @@ export const movieFilters = {
   category: {
     field: "category",
     options: [EFilterOptions.IS, EFilterOptions.LIKE],
+    provide: {
+      entity: "category",
+      field: "_id",
+      match: "name",
+    },
   },
 };

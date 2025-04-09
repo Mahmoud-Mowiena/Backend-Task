@@ -1,10 +1,5 @@
 import { Schema, BaseEntity } from "@storexweb/kernel";
 
-const categorySchema = new Schema({
-  _id: Schema.Types.ObjectId,
-  name: { type: String, required: true },
-});
-
 const movieSchema = new Schema(
   {
     name: { type: String, required: true },
@@ -14,7 +9,8 @@ const movieSchema = new Schema(
       default: [],
     },
     category: {
-      type: categorySchema,
+      type: Schema.Types.ObjectId,
+      ref: "category",
       required: true,
     },
   },

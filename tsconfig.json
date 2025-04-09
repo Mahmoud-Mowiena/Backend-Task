@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+    "target": "es6",
+    "noImplicitAny": true,
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "baseUrl": "./src",
+    "skipLibCheck": true,
+    "paths": {
+      "@storexweb/kernel": ["../../Node-Kernel/src"] // path to the kernel code
+    }
+  },
+  "include": [
+    "./src",
+    "./www"
+  ],
+  "exclude": [
+    "**/__tests__/*",
+    "node_modules",
+    "./dist/*"
+  ]
+}
